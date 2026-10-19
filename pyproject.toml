@@ -1,0 +1,39 @@
+[project]
+name = "z500-compression"
+version = "0.1.0"
+description = "Compressing ERA5 500 hPa geopotential height: PCA vs ConvAE vs ViT autoencoder (ROCm)"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    # deep learning (ROCm build on Linux, see [tool.uv.sources] below)
+    "torch>=2.4",
+    "pytorch-triton-rocm; sys_platform == 'linux'",
+    # data
+    "cdsapi>=0.7.2",
+    "xarray>=2024.1",
+    "netcdf4>=1.6",
+    "numpy>=1.26",
+    "pandas>=2.1",
+    # analysis / plotting
+    "scikit-learn>=1.4",
+    "matplotlib>=3.8",
+    "cartopy>=0.23",
+    # notebook
+    "jupyterlab>=4.1",
+    "ipykernel>=6.29",
+]
+
+# ---------------------------------------------------------------------------
+# PyTorch for AMD GPUs.
+# Change "rocm6.4" to match the ROCm version installed on your machine
+# (check with: cat /opt/rocm/.info/version). The list of available builds is
+# on pytorch.org -> Get Started -> Linux / Pip / ROCm.
+# On macOS/Windows torch falls back to the normal PyPI build (CPU).
+# ---------------------------------------------------------------------------
+[tool.uv.sources]
+torch = [{ index = "pytorch-rocm", marker = "sys_platform == 'linux'" }]
+pytorch-triton-rocm = [{ index = "pytorch-rocm", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-rocm"
+url = "https://download.pytorch.org/whl/rocm6.4"
+explicit = true
